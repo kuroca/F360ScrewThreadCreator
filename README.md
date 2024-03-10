@@ -11,5 +11,5 @@ In Fusion 360 there are a decent number of preset screw thread sizes, but when m
 
 ## Planned Feature Set
 
-- Autmatically move user presets when Fusion updates
+- Automatically move user presets when Fusion updates
 - Allow user to create metric screw threads by specifying thread diameter, pitch, and tolerance class
