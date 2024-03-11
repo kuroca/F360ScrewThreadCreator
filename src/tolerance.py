@@ -105,7 +105,8 @@ def external_major_diameter_max(major_diameter,pitch,tolerance_class):
 def external_major_diameter_min(major_diameter,pitch,tolerance_class):
     return major_diameter + upper_fundamental_deviation(pitch,tolerance_position) - external_major_diameter_tolerance(pitch,tolerance_grade)
 
-def external_minor_diameter_max(minor_diameter,pitch,tolerance_position):
+def external_minor_diameter_max(major_diameter_diameter,pitch,tolerance_position):
     def adj_y():
+        
 
 print(upper_fundamental_deviation(0.5,"h"))

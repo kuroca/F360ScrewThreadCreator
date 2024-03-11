@@ -5,6 +5,7 @@ import os
 import shutil
 from pathlib import Path
 import getpass
+import basicthread
 
 def updatefusionthreads(filename):
     # Replace '[user name]' with the actual user name or dynamically fetch the current user's username
@@ -42,14 +43,6 @@ def remove_blank_lines(file_path):
     with open(file_path, 'w') as file:
         file.writelines(non_blank_lines)
 
-def thread_dimensions(thread_diameter,thread_pitch):
-    height = thread_pitch * math.sqrt(3)/2
-    
-    basic_minor_diameter = thread_diameter - (5/4)*height
-    basic_pitch_diameter = thread_diameter - (3/4)*height
-    
-    return (round(basic_minor_diameter,2),round(basic_pitch_diameter,2))
-
 def add_thread_size(filename, diameter, pitch):
     try:
         tree = ET.parse(filename)
@@ -63,7 +56,7 @@ def add_thread_size(filename, diameter, pitch):
         root.append(ET.Element("SortOrder", text="15"))
         tree = ET.ElementTree(root)
     
-    d1,d2 = thread_dimensions(diameter,pitch)
+    d1,d2 = basicthread.minor_diameter(diameter,pitch), basicthread.pitch_diameter(diameter,pitch)
     
     thread_size = ET.SubElement(root, "ThreadSize")
     size = ET.SubElement(thread_size, "Size")
