@@ -1,6 +1,6 @@
 import math
 import re
-import basicthread
+import basicthread as bt
 
 def valid_tolerance_class(s):
     # Regular expression to match the tolerance class pattern
@@ -21,7 +21,10 @@ def split_tolerance_class(tolerance_class):
         raise ValueError("\"" + str(tolerance_class) + "\"" + " is not a valid tolerance class.")
 
 # For external threads
-def upper_fundamental_deviation(pitch,tolerance_position):
+def upper_fundamental_deviation(pitch,tolerance_class):
+    
+    tolerance_position = split_tolerance_class(tolerance_class)[1]
+
     match tolerance_position:
         case "e":
             k = 50 
@@ -37,11 +40,14 @@ def upper_fundamental_deviation(pitch,tolerance_position):
     return -1*(k + 11*pitch)/1000
 
 # For internal threads    
-def lower_fundamental_deviation(pitch,tolerance_position):
+def lower_fundamental_deviation(pitch,tolerance_class):
+
+    tolerance_position = split_tolerance_class(tolerance_class)[1]
+    
     match tolerance_position:
         case "G":
             return (15 + 11*pitch)/1000
-        case "H"
+        case "H":
             return 0
         case _:
             raise ValueError("\"" + str(tolerance_position) + "\"" + " is not a valid tolerance position.")
@@ -52,7 +58,10 @@ def lower_fundamental_deviation(pitch,tolerance_position):
 #
 # Pitch - The screw thread pitch
 # Tolerance grade - The "number" part of the tolerance class, i.e. for tolerance class "6g", "6" is the tolerance grade
-def external_major_diameter_tolerance(pitch,tolerance_grade):
+def external_major_diameter_tolerance(pitch,tolerance_class):
+
+    tolerance_grade = split_tolerance_class(tolerance_class)[0]
+
     match tolerance_grade:
         case 4:
             k = 0.63
@@ -71,7 +80,10 @@ def external_major_diameter_tolerance(pitch,tolerance_grade):
 #
 # Pitch - The screw thread pitch
 # Tolerance grade - The "number" part of the tolerance class, i.e. for tolerance class "6g", "6" is the tolerance grade
-def pitch_diameter_tolerance(major_diameter,pitch,tolerance_grade):
+def pitch_diameter_tolerance(major_diameter,pitch,tolerance_class):
+
+    tolerance_grade = split_tolerance_class(tolerance_class)[0]
+
     match tolerance_grade:
         case 3:
             k = 0.5
@@ -97,7 +109,10 @@ def pitch_diameter_tolerance(major_diameter,pitch,tolerance_grade):
 #
 # Pitch - The screw thread pitch
 # Tolerance grade - The "number" part of the tolerance class, i.e. for tolerance class "6g", "6" is the tolerance grade    
-def internal_minor_diameter_tolerance(pitch,tolerance_grade):
+def internal_minor_diameter_tolerance(pitch,tolerance_class):
+    
+    tolerance_grade = split_tolerance_class(tolerance_class)[0]
+    
     match tolerance_grade:
         case 4:
             k = 0.63
@@ -129,16 +144,13 @@ def external_major_diameter_min(major_diameter,pitch,tolerance_class):
 def external_minor_diameter_max(major_diameter_diameter,pitch,tolerance_class):
     tolerance_grade, tolerance_position = split_tolerance_class(tolerance_class)
     
-    y = (pitch/8) * (1 - math.cos(math.pi/3 - math.acos(1 - pitch_diameter_tolerance(tolerance_grade)/(pitch/2))))
+    y = (pitch/8) * (1 - math.cos(math.pi/3 - math.acos(1 - pitch_diameter_tolerance(tolerance_class)/(pitch/2))))
         
-    return basicthread.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_position) - 2*y
+    return bt.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_position) - 2*y
     
 def external_minor_diameter_min(major_diameter,pitch,tolerance_class):
     tolerance_grade, tolerance_position = split_tolerance_class(tolerance_class)
     
-    z = basicthread.height(pitch)/4 + pitch_diameter_tolerance(tolerance_grade)/2 - pitch/8
+    z = bt.height(pitch)/4 + pitch_diameter_tolerance(tolerance_class)/2 - pitch/8
         
-    return basicthread.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_position) - 2*z
-    
-
-print(upper_fundamental_deviation(0.5,"h"))
+    return bt.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_class) - 2*z
