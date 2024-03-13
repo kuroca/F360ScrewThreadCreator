@@ -132,25 +132,17 @@ def internal_minor_diameter_tolerance(pitch,tolerance_class):
         return k * (433 * pitch - 190 * math.pow(pitch,1.22))/1000
 
 def external_major_diameter_max(major_diameter,pitch,tolerance_class):
-    tolerance_position = split_tolerance_class(tolerance_class)[1]
-    
-    return major_diameter + upper_fundamental_deviation(pitch,tolerance_position)
+    return major_diameter + upper_fundamental_deviation(pitch,tolerance_class)
     
 def external_major_diameter_min(major_diameter,pitch,tolerance_class):
-    tolerance_grade, tolerance_position = split_tolerance_class(tolerance_class)
-    
-    return major_diameter + upper_fundamental_deviation(pitch,tolerance_position) - external_major_diameter_tolerance(pitch,tolerance_grade)
+    return major_diameter + upper_fundamental_deviation(pitch,tolerance_class) - external_major_diameter_tolerance(pitch,tolerance_class)
 
-def external_minor_diameter_max(major_diameter_diameter,pitch,tolerance_class):
-    tolerance_grade, tolerance_position = split_tolerance_class(tolerance_class)
-    
-    y = (pitch/8) * (1 - math.cos(math.pi/3 - math.acos(1 - pitch_diameter_tolerance(tolerance_class)/(pitch/2))))
+def external_minor_diameter_max(major_diameter,pitch,tolerance_class):
+    y = (pitch/8) * (1 - math.cos(math.pi/3 - math.acos(1 - pitch_diameter_tolerance(major_diameter,pitch,tolerance_class)/(pitch/2))))
         
-    return bt.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_position) - 2*y
+    return bt.minor_diameter(major_diameter,pitch) - upper_fundamental_deviation(pitch,tolerance_class) - 2*y
     
 def external_minor_diameter_min(major_diameter,pitch,tolerance_class):
-    tolerance_grade, tolerance_position = split_tolerance_class(tolerance_class)
-    
-    z = bt.height(pitch)/4 + pitch_diameter_tolerance(tolerance_class)/2 - pitch/8
+    z = bt.height(pitch)/4 + pitch_diameter_tolerance(major_diameter,pitch,tolerance_class)/2 - pitch/8
         
-    return bt.minor_diameter(major_diameter) - upper_fundamental_deviation(pitch,tolerance_class) - 2*z
+    return bt.minor_diameter(major_diameter,pitch) - upper_fundamental_deviation(pitch,tolerance_class) - 2*z
